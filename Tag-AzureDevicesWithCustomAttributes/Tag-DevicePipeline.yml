@@ -1,0 +1,22 @@
+trigger: none
+schedules:
+  - cron: "0 1 * * *"
+    displayName: "1am every day"
+    branches:
+      include:
+        - main
+    always: true
+
+stages:
+  - stage: Build
+    pool:
+      vmImage: 'windows-latest'
+    jobs:
+    - job: Build
+      displayName: 'Powershell Script Execute'
+      steps:
+        - task: PowerShell@2
+          displayName: 'Run Powershell Tag Devices Attributes'
+          inputs:
+            targetType: 'inline'
+            script: '.\Tag-DevicesExtensionAttributes.ps1 -appid $(appid) -secret $(secret)'
