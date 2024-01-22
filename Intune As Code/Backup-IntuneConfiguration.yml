@@ -1,18 +1,18 @@
 trigger: none
-#schedules:
-#  - cron: "0 1 * * *"
-#    displayName: "1am every day"
-#    branches:
-#      include:
-#        - main
-#    always: true
+schedules:
+  - cron: "0 2 * * *"
+    displayName: "2am every day"
+    branches:
+      include:
+        - main
+    always: true
 variables:
   - name: BACKUP_FOLDER
     value: prod-backup
   - name: TENANT_NAME
-    value: zfx.com
+    value: {TENANT_NAME}
   - name: USER_EMAIL
-    value: easonchoong@zfx.com
+    value: {USER_EMAIL}
   - name: USER_NAME
     value: IntuneConfigurationBackup
   # CLIENT_ID (Id of the SP that whould be used for authentication) and CLIENT_SECRET needs to be set separately using pipeline variables setting (so the secret is not saved as plaintext)
@@ -52,6 +52,7 @@ jobs:
           targetType: "inline"
           script: |
             mkdir -p "$(Build.SourcesDirectory)/$(BACKUP_FOLDER)"
+            ls -l "$(Build.SourcesDirectory)/$(BACKUP_FOLDER)"
 
             BACKUP_START=`date +%Y.%m.%d:%H.%M.%S`
             # set BACKUP_START pipeline variable
@@ -61,9 +62,12 @@ jobs:
                 --mode=1 \
                 --output=json \
                 --path="$(Build.SourcesDirectory)/$(BACKUP_FOLDER)" \
-                --exclude CompliancePartner \#data changes every day
-                --append-id \
-                --ignore-omasettings
+                --ignore-omasettings \
+                --append-id
+                #--path="$(Build.SourcesDirectory)/$(BACKUP_FOLDER)" \
+                #--path="$GITHUB_WORKSPACE/prod-backup" \
+                #--exclude CompliancePartner \#data changes every day
+                #-ignore-omasettings
           workingDirectory: "$(Build.SourcesDirectory)"
           failOnStderr: true
         env:
@@ -81,6 +85,7 @@ jobs:
             # $verbosePreference = 'continue'
 
             $root = "$(Build.SourcesDirectory)"
+            ls -l "$(Build.SourcesDirectory)/$(BACKUP_FOLDER)"
 
             Set-Location $root
 
