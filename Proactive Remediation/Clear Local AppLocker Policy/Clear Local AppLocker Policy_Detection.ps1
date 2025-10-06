@@ -1,0 +1,1 @@
+﻿if(Get-AppLockerPolicy -local){write-host "AppLocker policy detected"}
