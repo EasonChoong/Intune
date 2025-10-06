@@ -1,3 +1,6 @@
+# replaced with Intune-As-A-Code
+# ...
+
 Foreach ($Group in $Groups) {
 Write-host "Azure Active Directory Group Name: $($Group.displayName)" -ForegroundColor Green
 
